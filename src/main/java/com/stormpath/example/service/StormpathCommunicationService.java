@@ -1,28 +1,23 @@
 package com.stormpath.example.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.stormpath.example.model.FBMe;
 import com.stormpath.example.model.StormpathTokenResponse;
 import com.stormpath.sdk.account.Account;
 import com.stormpath.sdk.account.Accounts;
 import com.stormpath.sdk.application.Application;
 import com.stormpath.sdk.client.Client;
 import com.stormpath.sdk.client.Clients;
+import com.stormpath.sdk.oauth.Authenticators;
+import com.stormpath.sdk.oauth.IdSiteAuthenticationRequest;
+import com.stormpath.sdk.oauth.Oauth2Requests;
+import com.stormpath.sdk.oauth.OauthGrantAuthenticationResult;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Date;
 
 @Service
@@ -58,33 +53,18 @@ public class StormpathCommunicationService {
             SignatureAlgorithm.HS512, secret.getBytes("UTF-8")
         ).compact();
 
-        // Prepare a POST request against /oauth/token
-        PostMethod method = new PostMethod(applicationHref + "/oauth/token");
-        NameValuePair[] data = {
-            new NameValuePair("grant_type", "stormpath_token"),
-            new NameValuePair("token", token)
-        };
-        method.setRequestBody(data);
+        // It's not really ID Site
+        IdSiteAuthenticationRequest request =
+            Oauth2Requests.IDSITE_AUTHENTICATION_REQUEST.builder().setToken(token).build();
 
-        // Use Basic auth with the api key id and api key secret
-        HttpClient httpClient = new HttpClient();
-        httpClient.getState().setCredentials(
-            AuthScope.ANY,
-            new UsernamePasswordCredentials(client.getApiKey().getId(), client.getApiKey().getSecret())
+        OauthGrantAuthenticationResult result =
+            Authenticators.ID_SITE_AUTHENTICATOR.forApplication(application).authenticate(request);
+
+        return new StormpathTokenResponse(
+            result.getAccessTokenString(),
+            result.getRefreshTokenString(),
+            result.getTokenType(),
+            result.getExpiresIn()
         );
-        httpClient.executeMethod(method);
-
-        BufferedReader br = new BufferedReader(
-            new InputStreamReader(method.getResponseBodyAsStream())
-        );
-        StringBuffer buffer = new StringBuffer();
-        String line;
-        while(((line = br.readLine()) != null)) {
-            buffer.append(line);
-        }
-
-        // convert the response to a StormpathTokenResponse
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(buffer.toString(), StormpathTokenResponse.class);
     }
 }

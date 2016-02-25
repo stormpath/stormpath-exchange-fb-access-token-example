@@ -5,6 +5,7 @@ import com.stormpath.example.model.FBMe;
 import com.stormpath.example.model.StormpathTokenResponse;
 import com.stormpath.example.service.FBCommunicationService;
 import com.stormpath.example.service.StormpathCommunicationService;
+import com.stormpath.sdk.oauth.OauthGrantAuthenticationResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;

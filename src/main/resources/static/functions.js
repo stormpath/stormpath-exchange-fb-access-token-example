@@ -16,7 +16,7 @@ $(document).ready(function() {
             success: function (tokenResponse) {
                 console.log(tokenResponse);
 
-                var accessTokenParts = tokenResponse.access_token.split('.');
+                var accessTokenParts = tokenResponse.accessToken.split('.');
                 $.each(['header', 'payload', 'signature'], function (index, value) {
                     $('#access-token-' + value).html(accessTokenParts[index]);
                 });
