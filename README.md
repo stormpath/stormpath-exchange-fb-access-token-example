@@ -14,6 +14,7 @@ mvn clean package
 STORMPATH_API_KEY_ID=<your api key id> \
 STORMPATH_API_KEY_SECRET=<your api key secret> \
 STORMPATH_APPLICATION_HREF=<you application href> \
+FACEBOOK_APP_ID=<your facebook app id> \
 java -jar target/*.jar
 ```
 
