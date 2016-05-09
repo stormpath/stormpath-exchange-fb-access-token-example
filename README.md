@@ -2,6 +2,14 @@
 
 ## IMPORTANT NOTE: This uses a Stormpath API that will be going away soon. It is intended for demonstration purposes only. The Java SDK will soon have native support or Social Logins
 
+### Setup
+
+1. Create a Stormpath account [here](https://api.stormpath.com/register).
+2. Create a Facebook application [here](https://developers.facebook.com/).
+   * Note the app id and app secret of the Facebook app
+3. Map a Facebook Directory to your Stormpath application in the Stormpath [admin console](https://api.stormpath.com).
+   * You'll need to put in the Facebook app id and secret from the previous step
+
 ### Running the app
 
 This is a Spring Boot App that uses the raw Stormpath Java SDK
