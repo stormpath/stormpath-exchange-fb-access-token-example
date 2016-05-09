@@ -1,5 +1,6 @@
 package com.stormpath.example.service;
 
+import com.stormpath.example.model.FBAuth;
 import com.stormpath.example.model.StormpathTokenResponse;
 import com.stormpath.sdk.account.Account;
 import com.stormpath.sdk.account.Accounts;
@@ -10,6 +11,8 @@ import com.stormpath.sdk.oauth.Authenticators;
 import com.stormpath.sdk.oauth.IdSiteAuthenticationRequest;
 import com.stormpath.sdk.oauth.Oauth2Requests;
 import com.stormpath.sdk.oauth.OauthGrantAuthenticationResult;
+import com.stormpath.sdk.provider.ProviderAccountRequest;
+import com.stormpath.sdk.provider.Providers;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -33,6 +36,12 @@ public class StormpathCommunicationService {
     void setupClient() {
         client = Clients.builder().build();
         application = client.getResource(applicationHref, Application.class);
+    }
+
+    public Account getAccountFromFBToken(FBAuth fbAuth) {
+        ProviderAccountRequest request =
+            Providers.FACEBOOK.account().setAccessToken(fbAuth.getAccessToken()).build();
+        return application.getAccount(request).getAccount();
     }
 
     // this is trusting that the email has been verified as valid prior to calling this method

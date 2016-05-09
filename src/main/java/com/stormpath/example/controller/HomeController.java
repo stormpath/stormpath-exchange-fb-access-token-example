@@ -1,11 +1,9 @@
 package com.stormpath.example.controller;
 
 import com.stormpath.example.model.FBAuth;
-import com.stormpath.example.model.FBMe;
 import com.stormpath.example.model.StormpathTokenResponse;
-import com.stormpath.example.service.FBCommunicationService;
 import com.stormpath.example.service.StormpathCommunicationService;
-import com.stormpath.sdk.oauth.OauthGrantAuthenticationResult;
+import com.stormpath.sdk.account.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -23,9 +21,6 @@ public class HomeController {
     String fbAppId;
 
     @Autowired
-    FBCommunicationService fbCommunicationService;
-
-    @Autowired
     StormpathCommunicationService stormpathCommunicationService;
 
     @RequestMapping("/")
@@ -38,8 +33,8 @@ public class HomeController {
     @RequestMapping("/exchange")
     public @ResponseBody StormpathTokenResponse exchange(@RequestBody FBAuth auth) throws IOException {
 
-        FBMe fbMe = fbCommunicationService.getEmailAddressFromFBAccessToken(auth);
+        Account account = stormpathCommunicationService.getAccountFromFBToken(auth);
 
-        return stormpathCommunicationService.getTokenResponseFromEmail(fbMe.getEmail());
+        return stormpathCommunicationService.getTokenResponseFromEmail(account.getEmail());
     }
 }
