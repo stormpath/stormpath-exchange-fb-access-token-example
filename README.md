@@ -73,10 +73,10 @@ easily add a check to see if there's an existing token pair and return that inst
     ```
     @RequestMapping("/exchange")
     public @ResponseBody StormpathTokenResponse exchange(@RequestBody FBAuth auth) throws IOException {
-    
-        FBMe fbMe = fbCommunicationService.getEmailAddressFromFBAccessToken(auth);
-    
-        return stormpathCommunicationService.getTokenResponseFromEmail(fbMe.getEmail());
+
+        Account account = stormpathCommunicationService.getAccountFromFBToken(auth);
+
+        return stormpathCommunicationService.getTokenResponseFromEmail(account.getEmail());
     }
     ```
 
